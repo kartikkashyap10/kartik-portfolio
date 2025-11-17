@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import {
   windowComponentsConfig,
   appConfig,
-  isValidWindowId,
 } from "../config/windowComponents";
 
 interface WindowState {
@@ -11,7 +10,6 @@ interface WindowState {
 }
 
 export const useWindowManager = () => {
-  const isInitialMount = useRef(true);
   const windowHistory = useRef<string[]>([]);
 
   const [windowStates, setWindowStates] = useState<Record<string, WindowState>>(
@@ -68,10 +66,26 @@ export const useWindowManager = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowPreloader(false);
+      // Auto-open preload windows
+      const preloadWindows = windowComponentsConfig.filter(config => config.preload);
+      if (preloadWindows.length > 0) {
+        const firstPreload = preloadWindows[0];
+        setWindowStates(prev => ({
+          ...prev,
+          [firstPreload.id]: {
+            ...prev[firstPreload.id],
+            isVisible: true,
+            zIndex: appConfig.zIndex.initial + appConfig.zIndex.increment,
+          },
+        }));
+        setZIndexCounter(appConfig.zIndex.initial + appConfig.zIndex.increment);
+        setActiveElement(firstPreload.id);
+        updateWindowHistory(firstPreload.id);
+      }
     }, appConfig.preloader.duration);
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [updateWindowHistory]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -168,7 +182,8 @@ export const useWindowManager = () => {
     setShowCommandCentre(false);
   }, []);
 
-  const updateSlug = useCallback((_newSlug: string | null) => {
+  const updateSlug = useCallback((slugValue: string | null) => {
+    void slugValue;
     // No-op for Next.js version
   }, []);
 

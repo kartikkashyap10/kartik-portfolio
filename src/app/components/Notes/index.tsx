@@ -1,8 +1,9 @@
+/* eslint-disable @next/next/no-img-element */
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import styles from "./Notes.module.css";
 import WindowBox from "../WindowBox/WindowBox";
 import { notesData } from "../../notesData";
-import { createSlug, parseSlugPath } from "../../utils/slugUtils";
+import { createSlug } from "../../utils/slugUtils";
 
 interface NotesProps {
   onClickClose: () => void;
@@ -113,7 +114,7 @@ const Notes: React.FC<NotesProps> = ({
         updateSlug("all", true, noteParam ? { note: noteParam } : {});
       }
     }
-  }, [slug, searchParams, sections, notesData, updateSlug]);
+  }, [slug, searchParams, sections, updateSlug]);
 
   const handleSectionSelect = useCallback(
     (sectionName: string | null) => {
@@ -148,7 +149,7 @@ const Notes: React.FC<NotesProps> = ({
         }
       }
     },
-    [updateSlug, selectedNote, notesData]
+    [updateSlug, selectedNote]
   );
 
   const handleNoteSelect = useCallback(
@@ -307,7 +308,7 @@ const Notes: React.FC<NotesProps> = ({
             >
               <div
                 ref={el => {
-                  if (el) sectionRefs.current[0] = el;
+                  sectionRefs.current[0] = el;
                 }}
                 className={`${styles.sectionItem} ${
                   selectedSection === null ? styles.selected : ""
@@ -316,7 +317,6 @@ const Notes: React.FC<NotesProps> = ({
                 onKeyDown={e => handleSectionKeyDown(e, 0)}
                 role="listitem"
                 tabIndex={0}
-                aria-selected={selectedSection === null}
               >
                 <span className={styles.sectionIcon} aria-hidden="true">
                   📚
@@ -330,7 +330,9 @@ const Notes: React.FC<NotesProps> = ({
               {sections.map((section, index) => (
                 <div
                   key={section}
-                  ref={el => { if (el) sectionRefs.current[index + 1] = el; }}
+                  ref={el => {
+                    sectionRefs.current[index + 1] = el;
+                  }}
                   className={`${styles.sectionItem} ${
                     selectedSection === section ? styles.selected : ""
                   }`}
@@ -338,7 +340,6 @@ const Notes: React.FC<NotesProps> = ({
                   onKeyDown={e => handleSectionKeyDown(e, index + 1)}
                   role="listitem"
                   tabIndex={0}
-                  aria-selected={selectedSection === section}
                 >
                   <span className={styles.sectionIcon} aria-hidden="true">
                     {section === "Dev" ? "💻" : section === "DSA" ? "🧮" : "🏆"}
@@ -391,7 +392,7 @@ const Notes: React.FC<NotesProps> = ({
                             </h4>
                           </div>
                           <div className={styles.groupNotes}>
-                            {notesData[section].map((note, _noteIndex) => {
+                            {notesData[section].map(note => {
                               const globalIndex = Object.values(notesData)
                                 .flat()
                                 .findIndex(n => n.id === note.id);
@@ -399,7 +400,7 @@ const Notes: React.FC<NotesProps> = ({
                                 <div
                                   key={note.id}
                                   ref={el => {
-                                    if (el) noteRefs.current[globalIndex] = el;
+                                    noteRefs.current[globalIndex] = el;
                                   }}
                                   className={`${styles.noteCard} ${
                                     selectedNote === note.id
@@ -412,7 +413,6 @@ const Notes: React.FC<NotesProps> = ({
                                   }
                                   role="listitem"
                                   tabIndex={0}
-                                  aria-selected={selectedNote === note.id}
                                 >
                                   <div className={styles.noteHeader}>
                                     <h4 className={styles.noteTitle}>
@@ -437,7 +437,9 @@ const Notes: React.FC<NotesProps> = ({
                 : currentNotes.map((note, noteIndex) => (
                     <div
                       key={note.id}
-                      ref={el => { if (el) noteRefs.current[noteIndex] = el; }}
+                      ref={el => {
+                        noteRefs.current[noteIndex] = el;
+                      }}
                       className={`${styles.noteCard} ${
                         selectedNote === note.id ? styles.selectedNote : ""
                       }`}
@@ -445,7 +447,6 @@ const Notes: React.FC<NotesProps> = ({
                       onKeyDown={e => handleNoteKeyDown(e, noteIndex)}
                       role="listitem"
                       tabIndex={0}
-                      aria-selected={selectedNote === note.id}
                     >
                       <div className={styles.noteHeader}>
                         <h4 className={styles.noteTitle}>{note.title}</h4>

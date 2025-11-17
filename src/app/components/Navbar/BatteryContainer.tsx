@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import React, { useState } from "react";
 import batteryIcon from "../../assets/battery.png";
 import batteryCharging from "../../assets/batteryCharging.png";

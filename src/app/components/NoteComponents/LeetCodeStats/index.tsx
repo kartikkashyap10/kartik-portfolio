@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import React, { useState, useEffect } from "react";
 import styles from "./LeetCodeStats.module.css";
 
@@ -229,39 +230,39 @@ const LeetCodeStats: React.FC = () => {
         },
         contest: contestData
           ? {
-              bestRating:
-                contestData.contestParticipation?.length > 0
-                  ? Math.max(
-                      ...contestData.contestParticipation.map(
-                        (contest: Record<string, unknown>) => contest.rating
-                      )
-                    )
-                  : contestData.contestRating || 0,
-              contestRating: contestData.contestRating || 0,
-              contests: contestData.contestParticipation || [],
-              bestRanking:
-                contestData.contestParticipation?.length > 0
-                  ? Math.min(
-                      ...contestData.contestParticipation.map(
-                        (contest: Record<string, unknown>) => contest.ranking
-                      )
-                    )
-                  : 0,
-            }
+            bestRating:
+              contestData.contestParticipation?.length > 0
+                ? Math.max(
+                  ...contestData.contestParticipation.map(
+                    (contest: ContestParticipation) => contest.rating
+                  )
+                )
+                : contestData.contestRating || 0,
+            contestRating: contestData.contestRating || 0,
+            contests: contestData.contestParticipation || [],
+            bestRanking:
+              contestData.contestParticipation?.length > 0
+                ? Math.min(
+                  ...contestData.contestParticipation.map(
+                    (contest: ContestParticipation) => contest.ranking
+                  )
+                )
+                : 0,
+          }
           : {
-              bestRating: 0,
-              contestRating: 0,
-              contests: [],
-              bestRanking: 0,
-            },
+            bestRating: 0,
+            contestRating: 0,
+            contests: [],
+            bestRanking: 0,
+          },
         recentSubmissions: submissionsData?.submission || [],
         badges: badgesData?.badges
-          ? badgesData.badges.map((badge: Record<string, unknown>) => {
-              if (typeof badge.icon === 'string' && badge.icon.startsWith("/static")) {
-                badge.icon = "https://leetcode.com" + badge.icon;
-              }
-              return badge;
-            })
+          ? badgesData.badges.map((badge: Badge) => {
+            if (badge.icon.startsWith("/static")) {
+              badge.icon = "https://leetcode.com" + badge.icon;
+            }
+            return badge;
+          })
           : [],
       };
 
@@ -458,39 +459,36 @@ const LeetCodeStats: React.FC = () => {
             <div
               className={styles.progressSegment}
               style={{
-                width: `${
-                  leetcodeData.problemsSolved.solvedProblem > 0
+                width: `${leetcodeData.problemsSolved.solvedProblem > 0
                     ? (leetcodeData.problemsSolved.easySolved /
-                        leetcodeData.problemsSolved.solvedProblem) *
-                      100
+                      leetcodeData.problemsSolved.solvedProblem) *
+                    100
                     : 0
-                }%`,
+                  }%`,
                 backgroundColor: "#34c759",
               }}
             />
             <div
               className={styles.progressSegment}
               style={{
-                width: `${
-                  leetcodeData.problemsSolved.solvedProblem > 0
+                width: `${leetcodeData.problemsSolved.solvedProblem > 0
                     ? (leetcodeData.problemsSolved.mediumSolved /
-                        leetcodeData.problemsSolved.solvedProblem) *
-                      100
+                      leetcodeData.problemsSolved.solvedProblem) *
+                    100
                     : 0
-                }%`,
+                  }%`,
                 backgroundColor: "#ff9500",
               }}
             />
             <div
               className={styles.progressSegment}
               style={{
-                width: `${
-                  leetcodeData.problemsSolved.solvedProblem > 0
+                width: `${leetcodeData.problemsSolved.solvedProblem > 0
                     ? (leetcodeData.problemsSolved.hardSolved /
-                        leetcodeData.problemsSolved.solvedProblem) *
-                      100
+                      leetcodeData.problemsSolved.solvedProblem) *
+                    100
                     : 0
-                }%`,
+                  }%`,
                 backgroundColor: "#ff3b30",
               }}
             />
@@ -511,10 +509,10 @@ const LeetCodeStats: React.FC = () => {
                   (
                   {leetcodeData.problemsSolved.solvedProblem > 0
                     ? Math.round(
-                        (leetcodeData.problemsSolved.easySolved /
-                          leetcodeData.problemsSolved.solvedProblem) *
-                          100
-                      )
+                      (leetcodeData.problemsSolved.easySolved /
+                        leetcodeData.problemsSolved.solvedProblem) *
+                      100
+                    )
                     : 0}
                   %)
                 </span>
@@ -535,10 +533,10 @@ const LeetCodeStats: React.FC = () => {
                   (
                   {leetcodeData.problemsSolved.solvedProblem > 0
                     ? Math.round(
-                        (leetcodeData.problemsSolved.mediumSolved /
-                          leetcodeData.problemsSolved.solvedProblem) *
-                          100
-                      )
+                      (leetcodeData.problemsSolved.mediumSolved /
+                        leetcodeData.problemsSolved.solvedProblem) *
+                      100
+                    )
                     : 0}
                   %)
                 </span>
@@ -559,10 +557,10 @@ const LeetCodeStats: React.FC = () => {
                   (
                   {leetcodeData.problemsSolved.solvedProblem > 0
                     ? Math.round(
-                        (leetcodeData.problemsSolved.hardSolved /
-                          leetcodeData.problemsSolved.solvedProblem) *
-                          100
-                      )
+                      (leetcodeData.problemsSolved.hardSolved /
+                        leetcodeData.problemsSolved.solvedProblem) *
+                      100
+                    )
                     : 0}
                   %)
                 </span>
@@ -616,9 +614,8 @@ const LeetCodeStats: React.FC = () => {
                 >
                   {showAllContests ? "Show Less" : "Show All"}
                   <span
-                    className={`${styles.expandIcon} ${
-                      showAllContests ? styles.expanded : ""
-                    }`}
+                    className={`${styles.expandIcon} ${showAllContests ? styles.expanded : ""
+                      }`}
                   >
                     ▼
                   </span>
@@ -735,9 +732,8 @@ const LeetCodeStats: React.FC = () => {
               >
                 {showAllSubmissions ? "Show Less" : "Show 20"}
                 <span
-                  className={`${styles.expandIcon} ${
-                    showAllSubmissions ? styles.expanded : ""
-                  }`}
+                  className={`${styles.expandIcon} ${showAllSubmissions ? styles.expanded : ""
+                    }`}
                 >
                   ▼
                 </span>
@@ -768,11 +764,10 @@ const LeetCodeStats: React.FC = () => {
                       </div>
                     </div>
                     <div
-                      className={`${styles.submissionStatus} ${
-                        submission.statusDisplay === "Accepted"
+                      className={`${styles.submissionStatus} ${submission.statusDisplay === "Accepted"
                           ? styles.accepted
                           : styles.rejected
-                      }`}
+                        }`}
                     >
                       {submission.statusDisplay}
                     </div>

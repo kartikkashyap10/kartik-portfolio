@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import React from "react";
 import WindowBox from "../WindowBox/WindowBox";
 import styles from "./AboutUs.module.css";
@@ -33,7 +34,7 @@ const AboutUs: React.FC<AboutUsProps> = ({
       case "leetcode":
         return url.replace("https://leetcode.com/u/", "").replace("/", "");
       case "whatsapp":
-        return "+91 90824 15471";
+        return "+91 99206 46238";
       default:
         return url;
     }

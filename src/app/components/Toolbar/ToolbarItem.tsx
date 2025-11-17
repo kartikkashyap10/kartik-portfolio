@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import React, { forwardRef } from "react";
 import styles from "./Toolbar.module.css";
 import { WindowConfig } from "../../config/windowComponents";
@@ -21,6 +22,9 @@ const ToolbarItem = forwardRef<HTMLDivElement, ToolbarItemProps>(
       }
     };
 
+    const iconSrc =
+      typeof config.icon === "string" ? config.icon : config.icon.src;
+
     return (
       <div
         ref={ref}
@@ -37,7 +41,7 @@ const ToolbarItem = forwardRef<HTMLDivElement, ToolbarItemProps>(
           {config.displayName}
         </span>
         <img
-          src={config.icon}
+          src={iconSrc}
           alt=""
           className={styles.toolbarIcon}
           aria-hidden="true"

@@ -1,10 +1,13 @@
 .container {
-  height: 100%;
   position: relative;
+  width: 100vw;
+  height: 100vh;
+  min-height: 100vh;
   background-image: url("/images/home-screen.png");
   background-size: cover;
-  border-radius: 0.2rem;
   background-position: center;
+  border-radius: 0.2rem;
+  overflow: hidden;
 }
 .preloader {
   position: absolute;

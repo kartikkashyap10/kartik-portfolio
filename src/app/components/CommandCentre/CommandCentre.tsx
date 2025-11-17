@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import React, { useEffect, useState } from "react";
 import styles from "./CommandCentre.module.css";
 import { WindowConfig } from "../../config/windowComponents";
@@ -71,7 +72,10 @@ const CommandCentre: React.FC<CommandCentreProps> = ({
         </div>
 
         <div className={styles.appsGrid}>
-          {filteredApps.map(config => (
+          {filteredApps.map(config => {
+            const iconSrc =
+              typeof config.icon === "string" ? config.icon : config.icon.src;
+            return (
             <div
               key={config.id}
               className={`${styles.appCard} ${
@@ -88,7 +92,7 @@ const CommandCentre: React.FC<CommandCentreProps> = ({
             >
               <div className={styles.appIconContainer}>
                 <img
-                  src={config.icon}
+                  src={iconSrc}
                   alt={config.displayName}
                   className={styles.appIcon}
                 />
@@ -103,7 +107,8 @@ const CommandCentre: React.FC<CommandCentreProps> = ({
                 )}
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
 
         {filteredApps.length === 0 && (

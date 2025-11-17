@@ -1,9 +1,10 @@
+/* eslint-disable @next/next/no-img-element */
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import styles from "./Projects.module.css";
 import WindowBox from "../WindowBox/WindowBox";
 import { projects } from "../../data";
 import ProjectItem from "./ProjectItem";
-import { createSlug, parseSlugPath } from "../../utils/slugUtils";
+import { createSlug } from "../../utils/slugUtils";
 import {
   VscFolder,
   VscFolderOpened,
@@ -95,6 +96,109 @@ const Projects: React.FC<ProjectsProps> = ({
     }
   }, [slug]);
 
+  const announceToScreenReader = useCallback((message: string) => {
+    const announcement = document.createElement("div");
+    announcement.setAttribute("aria-live", "polite");
+    announcement.setAttribute("aria-atomic", "true");
+    announcement.className = "sr-only";
+    announcement.style.position = "absolute";
+    announcement.style.left = "-10000px";
+    announcement.style.width = "1px";
+    announcement.style.height = "1px";
+    announcement.style.overflow = "hidden";
+    announcement.textContent = message;
+
+    document.body.appendChild(announcement);
+    setTimeout(() => document.body.removeChild(announcement), 1000);
+  }, []);
+
+  const handleProjectSelect = useCallback(
+    (index: number) => {
+      const actualIndex = projects.findIndex(
+        p => p.title === filteredProjects[index].title
+      );
+      setSelectedProject(actualIndex);
+
+      const projectTitle = filteredProjects[index].title;
+      const projectSlug = createSlug(projectTitle);
+
+      if (updateSlug) {
+        updateSlug(projectSlug);
+      }
+
+      const announcement = `Opened project ${projectTitle}`;
+      announceToScreenReader(announcement);
+    },
+    [filteredProjects, updateSlug, announceToScreenReader]
+  );
+
+  const handleViewModeChange = useCallback(
+    (mode: "explorer" | "grid") => {
+      setViewMode(mode);
+      setSelectedProject(null);
+      setFocusedProjectIndex(-1);
+
+      if (updateSlug) {
+        updateSlug(null);
+      }
+
+      const announcement = `Switched to ${mode} view`;
+      announceToScreenReader(announcement);
+    },
+    [updateSlug, announceToScreenReader]
+  );
+
+  const handleMobileProjectSelect = useCallback(
+    (index: number) => {
+      const actualIndex = projects.findIndex(
+        p => p.title === filteredProjects[index].title
+      );
+      setSelectedMobileProject(actualIndex);
+
+      const projectTitle = filteredProjects[index].title;
+      const projectSlug = createSlug(projectTitle);
+
+      if (updateSlug) {
+        updateSlug(projectSlug);
+      }
+
+      const announcement = `Opened project details for ${projectTitle}`;
+      announceToScreenReader(announcement);
+    },
+    [filteredProjects, updateSlug, announceToScreenReader]
+  );
+
+  const clearSearch = useCallback(() => {
+    setSearchTerm("");
+    announceToScreenReader("Search cleared");
+  }, [announceToScreenReader]);
+
+  const handleExplorerToggle = useCallback(() => {
+    setIsExplorerOpen(prev => {
+      const nextState = !prev;
+      const announcement = `Explorer ${nextState ? "expanded" : "collapsed"}`;
+      announceToScreenReader(announcement);
+      return nextState;
+    });
+  }, [announceToScreenReader]);
+
+  const handleRepositoryProjectSelect = useCallback(
+    (actualIndex: number) => {
+      setSelectedProject(actualIndex);
+
+      const project = projects[actualIndex];
+      const projectSlug = createSlug(project.title);
+
+      if (updateSlug) {
+        updateSlug(projectSlug);
+      }
+
+      const announcement = `Opened project ${project.title}`;
+      announceToScreenReader(announcement);
+    },
+    [updateSlug, announceToScreenReader]
+  );
+
   const handleProjectKeyDown = useCallback(
     (event: React.KeyboardEvent, index: number) => {
       switch (event.key) {
@@ -137,7 +241,12 @@ const Projects: React.FC<ProjectsProps> = ({
           break;
       }
     },
-    [filteredProjects.length, selectedProject]
+    [
+      filteredProjects.length,
+      handleProjectSelect,
+      selectedProject,
+      updateSlug,
+    ]
   );
 
   const handleActivityBarKeyDown = useCallback(
@@ -156,15 +265,11 @@ const Projects: React.FC<ProjectsProps> = ({
         case "Enter":
         case " ":
           event.preventDefault();
-          if (focusedActivityIndex === 0) {
-            handleViewModeChange("explorer");
-          } else {
-            handleViewModeChange("grid");
-          }
+          handleViewModeChange(focusedActivityIndex === 0 ? "explorer" : "grid");
           break;
       }
     },
-    [focusedActivityIndex]
+    [focusedActivityIndex, handleViewModeChange]
   );
 
   const handleSearchKeyDown = useCallback(
@@ -178,98 +283,8 @@ const Projects: React.FC<ProjectsProps> = ({
         projectRefs.current[0]?.focus();
       }
     },
-    [filteredProjects.length]
+    [filteredProjects.length, clearSearch]
   );
-
-  const handleProjectSelect = (index: number) => {
-    const actualIndex = projects.findIndex(
-      p => p.title === filteredProjects[index].title
-    );
-    setSelectedProject(actualIndex);
-
-    const projectTitle = filteredProjects[index].title;
-    const projectSlug = createSlug(projectTitle);
-
-    if (updateSlug) {
-      updateSlug(projectSlug);
-    }
-
-    const announcement = `Opened project ${projectTitle}`;
-    announceToScreenReader(announcement);
-  };
-
-  const handleViewModeChange = (mode: "explorer" | "grid") => {
-    setViewMode(mode);
-    setSelectedProject(null);
-    setFocusedProjectIndex(-1);
-
-    if (updateSlug) {
-      updateSlug(null);
-    }
-
-    const announcement = `Switched to ${mode} view`;
-    announceToScreenReader(announcement);
-  };
-
-  const handleMobileProjectSelect = (index: number) => {
-    const actualIndex = projects.findIndex(
-      p => p.title === filteredProjects[index].title
-    );
-    setSelectedMobileProject(actualIndex);
-
-    const projectTitle = filteredProjects[index].title;
-    const projectSlug = createSlug(projectTitle);
-
-    if (updateSlug) {
-      updateSlug(projectSlug);
-    }
-
-    const announcement = `Opened project details for ${projectTitle}`;
-    announceToScreenReader(announcement);
-  };
-
-  const clearSearch = () => {
-    setSearchTerm("");
-    announceToScreenReader("Search cleared");
-  };
-
-  const announceToScreenReader = (message: string) => {
-    const announcement = document.createElement("div");
-    announcement.setAttribute("aria-live", "polite");
-    announcement.setAttribute("aria-atomic", "true");
-    announcement.className = "sr-only";
-    announcement.style.position = "absolute";
-    announcement.style.left = "-10000px";
-    announcement.style.width = "1px";
-    announcement.style.height = "1px";
-    announcement.style.overflow = "hidden";
-    announcement.textContent = message;
-
-    document.body.appendChild(announcement);
-    setTimeout(() => document.body.removeChild(announcement), 1000);
-  };
-
-  const handleExplorerToggle = () => {
-    setIsExplorerOpen(!isExplorerOpen);
-    const announcement = `Explorer ${
-      !isExplorerOpen ? "expanded" : "collapsed"
-    }`;
-    announceToScreenReader(announcement);
-  };
-
-  const handleRepositoryProjectSelect = (actualIndex: number) => {
-    setSelectedProject(actualIndex);
-
-    const project = projects[actualIndex];
-    const projectSlug = createSlug(project.title);
-
-    if (updateSlug) {
-      updateSlug(projectSlug);
-    }
-
-    const announcement = `Opened project ${project.title}`;
-    announceToScreenReader(announcement);
-  };
 
   return (
     <IconContext.Provider value={{ size: "16px" }}>
@@ -439,9 +454,12 @@ const Projects: React.FC<ProjectsProps> = ({
                               className={styles.projectFolder}
                               role="treeitem"
                               aria-expanded={selectedProject === actualIndex}
+                              aria-selected={selectedProject === actualIndex}
                             >
                               <div
-                                ref={el => { if (el) projectRefs.current[index] = el; }}
+                                ref={el => {
+                                  projectRefs.current[index] = el;
+                                }}
                                 className={`${styles.folderItem} ${
                                   selectedProject === actualIndex
                                     ? styles.expanded
@@ -515,6 +533,7 @@ const Projects: React.FC<ProjectsProps> = ({
                                   <div
                                     className={styles.fileItem}
                                     role="treeitem"
+                                    aria-selected="true"
                                   >
                                     <VscMarkdown
                                       className={styles.readmeIcon}
@@ -647,7 +666,7 @@ const Projects: React.FC<ProjectsProps> = ({
                         role="grid"
                         aria-label="Repository grid view"
                       >
-                        {filteredProjects.map((project, _index) => {
+                        {filteredProjects.map(project => {
                           const actualIndex = projects.findIndex(
                             p => p.title === project.title
                           );

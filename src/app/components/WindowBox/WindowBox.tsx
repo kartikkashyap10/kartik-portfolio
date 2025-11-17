@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import styles from "./WindowBox.module.css";
 import React, { useEffect, useState, useRef } from "react";
 import Close from "../../assets/Close.png";
@@ -46,7 +47,10 @@ const WindowBox: React.FC<WindowBoxProps> = ({
     height: initialHeight,
     width: initialWidth,
   });
-  const [position, setPosition] = useState<Position>({ x: 50, y: 50 });
+  const [position, setPosition] = useState<Position>({
+    x: offset,
+    y: offset,
+  });
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
 
@@ -54,14 +58,14 @@ const WindowBox: React.FC<WindowBoxProps> = ({
     const handleResize = () => {
       if (!isMobile) {
         setDimensions({ height: initialHeight, width: initialWidth });
-        setPosition({ x: 50, y: 50 });
+        setPosition({ x: 50 + offset, y: 50 + offset });
       } else {
         setDimensions({ height: 90, width: 100 });
         setPosition({ x: 0, y: 0 });
       }
     };
     handleResize();
-  }, [isMobile, initialHeight, initialWidth]);
+  }, [isMobile, initialHeight, initialWidth, offset]);
 
   const handleMouseDown = (e: React.MouseEvent) => {
     if (isMobile) return;
@@ -105,7 +109,7 @@ const WindowBox: React.FC<WindowBoxProps> = ({
       setPosition({ x: 0, y: 0 });
     } else {
       setDimensions({ height: initialHeight, width: initialWidth });
-      setPosition({ x: 50, y: 50 });
+      setPosition({ x: 50 + offset, y: 50 + offset });
     }
   };
 
@@ -116,7 +120,6 @@ const WindowBox: React.FC<WindowBoxProps> = ({
       onMouseDown={handleMouseDown}
       style={{
         zIndex: zIndexVal,
-        position: "absolute",
         top: `${position.y}px`,
         left: `${position.x}px`,
         height: `${dimensions.height}%`,
@@ -125,6 +128,7 @@ const WindowBox: React.FC<WindowBoxProps> = ({
           ? "0px 0px 32px 0px rgba(0, 0, 0, 0.50)"
           : "0 0 10px rgba(0, 0, 0, 0.2)",
         border: activeElement ? "1px solid #131313" : "none",
+        position: "absolute",
         cursor: isDragging ? "grabbing" : "grab",
       }}
     >
@@ -140,15 +144,9 @@ const WindowBox: React.FC<WindowBoxProps> = ({
         ) : (
           <>
             <div className={styles.statBarIcons}>
-              <button onClick={onClickClose} style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}>
-                <img src={Close.src} alt="Close" style={{ width: "12px", height: "12px" }} />
-              </button>
-              <button onClick={onClickClose} style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}>
-                <img src={Minimize.src} alt="Minimize" style={{ width: "12px", height: "12px" }} />
-              </button>
-              <button onClick={handleZoom} style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}>
-                <img src={Zoom.src} alt="Zoom" style={{ width: "12px", height: "12px" }} />
-              </button>
+              <img src={Close.src} alt="Close" onClick={onClickClose} />
+              <img src={Minimize.src} alt="Minimize" onClick={onClickClose} />
+              <img src={Zoom.src} alt="Zoom" onClick={handleZoom} />
             </div>
             <div>{displayText}</div>
             <div></div>

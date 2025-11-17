@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import React from "react";
 import { Project } from "../../../data";
 import styles from "../PlainPortfolio.module.css";

@@ -1,4 +1,5 @@
 import { ComponentType } from "react";
+import { StaticImageData } from "next/image";
 import AboutUs from "../components/AboutUs";
 import Projects from "../components/Projects";
 import Experience from "../components/Experience";
@@ -28,7 +29,7 @@ export interface WindowConfig {
   name: string;
   displayName: string;
   component: ComponentType<WindowComponentProps>;
-  icon: string;
+  icon: string | StaticImageData;
   defaultZIndex: number;
   preload?: boolean;
   description?: string;
@@ -61,7 +62,7 @@ export const windowComponentsConfig: WindowConfig[] = [
     name: "About Me",
     displayName: "About Me",
     component: AboutUs,
-    icon: linux.src,
+    icon: linux,
     defaultZIndex: 1,
     preload: true,
     description: "Learn more about Arya Nair",
@@ -71,7 +72,7 @@ export const windowComponentsConfig: WindowConfig[] = [
     name: "Projects",
     displayName: "Projects",
     component: Projects,
-    icon: visualStudio.src,
+    icon: visualStudio,
     defaultZIndex: 1,
     preload: false,
     description: "View my portfolio projects",
@@ -81,7 +82,7 @@ export const windowComponentsConfig: WindowConfig[] = [
     name: "Experience",
     displayName: "Experience",
     component: Experience,
-    icon: terminal.src,
+    icon: terminal,
     defaultZIndex: 1,
     preload: false,
     description: "Check out my work experience",
@@ -91,7 +92,7 @@ export const windowComponentsConfig: WindowConfig[] = [
     name: "Notes",
     displayName: "Notes",
     component: Notes,
-    icon: notes.src,
+    icon: notes,
     defaultZIndex: 1,
     preload: false,
     description: "Browse my knowledge base and notes",
@@ -147,7 +148,9 @@ export const getWindowDisplayName = (id: string): string => {
   return config?.displayName || id;
 };
 
-export const getWindowIcon = (id: string): string | undefined => {
+export const getWindowIcon = (
+  id: string
+): string | StaticImageData | undefined => {
   const config = getWindowConfigById(id);
   return config?.icon;
 };

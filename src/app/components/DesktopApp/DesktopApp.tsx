@@ -5,7 +5,7 @@ import drive from "../../assets/drive.png";
 
 const DesktopApp: React.FC = () => {
   const handleClick = () => {
-    console.log("Plain view clicked");
+    window.location.href = "/plain";
   };
 
   return (

@@ -1,5 +1,6 @@
+/* eslint-disable @next/next/no-img-element */
 import React from "react";
-import { motion } from "framer-motion";
+import { motion, type MotionProps } from "framer-motion";
 import styles from "./ProjectItem.module.css";
 import { FaGithub, FaExternalLinkAlt } from "react-icons/fa";
 import { IconContext } from "react-icons";
@@ -33,10 +34,20 @@ const animation = {
   },
 };
 
+type MotionDivProps = React.PropsWithChildren<
+  React.HTMLAttributes<HTMLDivElement> & MotionProps
+>;
+
+const MotionDiv = motion.div as React.ComponentType<MotionDivProps>;
+
 const ProjectItem: React.FC<ProjectItemProps> = ({ data }) => {
   return (
-    <div
+    <MotionDiv
       className={styles.container}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
+      variants={animation}
     >
       <div className={styles.projectHeader}>
         <div className={styles.projectMeta}>
@@ -130,7 +141,7 @@ const ProjectItem: React.FC<ProjectItemProps> = ({ data }) => {
           </div>
         </div>
       </div>
-    </div>
+    </MotionDiv>
   );
 };
 

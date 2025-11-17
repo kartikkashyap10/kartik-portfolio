@@ -54,7 +54,7 @@ const WakatimeStats: React.FC = () => {
         localStorage.setItem(CACHE_KEY, JSON.stringify(cacheData));
 
         setWakatimeData(data);
-      } catch (err) {
+      } catch {
         const cachedData = localStorage.getItem(CACHE_KEY);
         if (cachedData) {
           const parsed: CachedData = JSON.parse(cachedData);
@@ -128,21 +128,6 @@ const WakatimeStats: React.FC = () => {
         year: "numeric",
       }),
     }));
-
-  const maxDailyHours = Math.max(...days.map(day => day.total / 3600));
-  const _heatmapData = days.slice(-365).map(day => {
-    const hours = day.total / 3600;
-    let intensity = "heatmapLow";
-    if (hours > maxDailyHours * 0.7) intensity = "heatmapVeryHigh";
-    else if (hours > maxDailyHours * 0.5) intensity = "heatmapHigh";
-    else if (hours > maxDailyHours * 0.2) intensity = "heatmapMedium";
-
-    return {
-      date: day.date,
-      hours: hours.toFixed(1),
-      intensity,
-    };
-  });
 
   return (
     <div className={styles.container}>

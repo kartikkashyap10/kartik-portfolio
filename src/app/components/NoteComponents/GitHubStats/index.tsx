@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import React from "react";
 import styles from "./GitHubStats.module.css";
 
@@ -38,18 +39,6 @@ interface GitHubOrg {
   login: string;
   avatar_url: string;
   description?: string;
-}
-
-interface GitHubEvent {
-  type: string;
-  repo: {
-    name: string;
-    url: string;
-  };
-  org?: {
-    login: string;
-    avatar_url: string;
-  };
 }
 
 interface ContributedRepo {
@@ -117,13 +106,6 @@ const GitHubStats: React.FC = () => {
     );
     const orgs: GitHubOrg[] = orgsResponse.ok ? await orgsResponse.json() : [];
 
-    const eventsResponse = await fetch(
-      `${baseUrl}/users/${GITHUB_USERNAME}/events/public?per_page=100`
-    );
-    const _events: GitHubEvent[] = eventsResponse.ok
-      ? await eventsResponse.json()
-      : [];
-
     const totalStars = repos.reduce(
       (sum, repo) => sum + repo.stargazers_count,
       0
@@ -164,8 +146,10 @@ const GitHubStats: React.FC = () => {
         }
       >();
 
-      prSearchData.items?.forEach((pr: Record<string, unknown>) => {
-        const repoFullName = (pr.repository_url as string).split("/").slice(-2).join("/");
+      prSearchData.items?.forEach(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (pr: any) => {
+        const repoFullName = pr.repository_url.split("/").slice(-2).join("/");
         const [owner, name] = repoFullName.split("/");
         const key = repoFullName;
 
@@ -181,8 +165,10 @@ const GitHubStats: React.FC = () => {
         repoContributions.get(key)!.prs++;
       });
 
-      issueSearchData.items?.forEach((issue: Record<string, unknown>) => {
-        const repoFullName = (issue.repository_url as string)
+      issueSearchData.items?.forEach(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (issue: any) => {
+        const repoFullName = issue.repository_url
           .split("/")
           .slice(-2)
           .join("/");
@@ -201,8 +187,7 @@ const GitHubStats: React.FC = () => {
         repoContributions.get(key)!.issues++;
       });
 
-      Array.from(repoContributions.entries()).forEach(
-        ([_repoFullName, data]) => {
+      Array.from(repoContributions.entries()).forEach(([, data]) => {
           const isOwnRepo = data.owner === GITHUB_USERNAME;
 
           contributedRepos.push({
@@ -338,7 +323,7 @@ const GitHubStats: React.FC = () => {
         localStorage.setItem(CACHE_KEY, JSON.stringify(cacheData));
 
         setGithubData(data);
-      } catch (err) {
+      } catch {
         const cachedData = localStorage.getItem(CACHE_KEY);
         if (cachedData) {
           const parsed: CachedGitHubData = JSON.parse(cachedData);
@@ -522,7 +507,7 @@ const GitHubStats: React.FC = () => {
               All-Time Repository Contributions
             </h4>
             <div className={styles.contributedRepos}>
-              {githubData.contributedRepos.slice(0, 12).map((repo, _index) => (
+              {githubData.contributedRepos.slice(0, 12).map(repo => (
                 <div
                   key={`${repo.owner}/${repo.name}`}
                   className={styles.contributedRepo}

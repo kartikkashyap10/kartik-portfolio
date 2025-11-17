@@ -128,12 +128,11 @@ export function initializeNetworkStatus() {
   window.addEventListener("offline", updateOnlineStatus);
 }
 
-
 export function isPWA(): boolean {
   return (
     window.matchMedia("(display-mode: standalone)").matches ||
-    (window.navigator as { standalone?: boolean }).standalone ||
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (window.navigator as any).standalone ||
     document.referrer.includes("android-app://")
   );
 }
-
