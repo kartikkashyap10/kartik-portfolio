@@ -65,7 +65,7 @@ export const windowComponentsConfig: WindowConfig[] = [
     icon: linux,
     defaultZIndex: 1,
     preload: true,
-    description: "Learn more about Arya Nair",
+    description: "Learn more about Kartik Kashyap",
   },
   {
     id: "Projects",

@@ -50,17 +50,17 @@ export interface AchievementNote {
 }
 
 const personalInfo: PersonalInfo = {
-  name: "Arya Nair",
+  name: "Kartik Kashyap",
   tagline: "I like to build software that solves real problems 🚀💻🎯",
   profileImage: "/images/profilePic.png",
   subtitle: "Software Developer",
-  education: "B.Tech Information Technology",
+  education: "B.E. Computer Engeineering",
   socialLinks: {
-    github: "https://github.com/Arya-A-Nair",
-    linkedin: "https://linkedin.com/in/arya-nair-2003",
-    leetcode: "https://leetcode.com/u/aryaajitnair/",
-    email: "mailto:aryaajitnair@gmail.com",
-    whatsapp: "https://wa.me/919920646238",
+    github: "https://github.com/kartikkashyap10",
+    linkedin: "https://www.linkedin.com/in/kartik-kashyap-3b73631a6/",
+    leetcode: "https://leetcode.com/u/DekuDreamer/",
+    email: "mailto:kykashyap10@gmail.com",
+    whatsapp: "https://wa.me/9082415471",
     resume:
       "https://drive.google.com/file/d/1bhLfOFy87ukde8o6MoI6AC0gJmc6Nygp/view?usp=sharing",
   },

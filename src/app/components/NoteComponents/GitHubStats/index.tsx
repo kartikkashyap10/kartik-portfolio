@@ -79,7 +79,7 @@ interface CachedGitHubData {
   timestamp: number;
 }
 
-const GITHUB_USERNAME = "Arya-A-Nair";
+const GITHUB_USERNAME = "kartikkashyap10";
 const CACHE_KEY = "github_data_v2";
 const CACHE_DURATION = 1000 * 60 * 30;
 

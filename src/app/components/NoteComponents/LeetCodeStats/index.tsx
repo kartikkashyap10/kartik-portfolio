@@ -72,7 +72,7 @@ interface LeetCodeData {
   badges: Badge[];
 }
 
-const LEETCODE_USERNAME = "aryaajitnair";
+const LEETCODE_USERNAME = "DekuDreamer";
 const CACHE_KEY = "leetcode_data_v1";
 const CACHE_DURATION = 1000 * 60 * 15;
 
